@@ -6,7 +6,9 @@ $ sudo add-apt-repository ppa:deadsnakes/ppa
 $ sudo apt-get install virtualenv python3.9 python3.9-distutils
 $ virtualenv -p`which python3.9` ryu-python3.9-venv
 $ source ryu-python3.9-venv/bin/activate
-$ echo $VIRTUAL_ENV #check if we are indeed in the virtual environment
+
+Dins entorn virtual:
+$ echo $VIRTUAL_ENV 
 $ pip install ryu
 $ pip uninstall eventlet
 $ pip install eventlet==0.30.2
