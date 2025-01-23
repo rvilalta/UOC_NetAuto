@@ -1,6 +1,16 @@
 ## EXEMPLE RYU I MININET ##
+Instruccions per UBUNTU 22.04
+
 Primer, cal instal·lar les dependències:  
-$ sudo apt-get install python3-ryu mininet openvswitch-switch
+$ sudo add-apt-repository ppa:deadsnakes/ppa
+$ sudo apt-get install virtualenv python3.9 python3.9-distutils
+$ virtualenv -p`which python3.9` ryu-python3.9-venv
+$ source ryu-python3.9-venv/bin/activate
+$ echo $VIRTUAL_ENV #check if we are indeed in the virtual environment
+$ pip install ryu
+$ pip uninstall eventlet
+$ pip install eventlet==0.30.2
+$ ryu-manager --help
 
 En una finestra de terminal, arrenquem el controlador Ryu amb la nostra aplicació:  
 $ ryu-manager --verbose SimpleFlowApp.py
