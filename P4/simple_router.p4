@@ -71,6 +71,9 @@ control MyIngress(inout headers hdr,
                   inout metadata meta,
                   inout standard_metadata_t standard_metadata) {
 
+    action send_to_cpu() {
+        standard_metadata.egress_spec = 0; // Envia a la CPU per manejar ARP
+    }
     action ipv4_forward(bit<48> dstMac, bit<9> port) {
         hdr.ethernet.dstAddr = dstMac;
         standard_metadata.egress_spec = port;
@@ -98,6 +101,10 @@ control MyIngress(inout headers hdr,
     }
 
     apply {
+        if (hdr.ethernet.etherType == 0x0806) { // ARP packets
+            send_to_cpu();
+            return;
+        }
         if (hdr.ethernet.etherType == 0x0800) { /* IPv4 */
             ipv4_lpm.apply();
         }
