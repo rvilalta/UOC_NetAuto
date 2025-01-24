@@ -7,7 +7,7 @@
 #include <core.p4>
 #include <v1model.p4>
 
-/* Definició de headers */
+/* headers */
 header ethernet_t {
     bit<48> dstAddr;
     bit<48> srcAddr;
@@ -63,29 +63,13 @@ parser MyParser(packet_in packet,
 
 control MyVerifyChecksum(inout headers hdr, inout metadata meta) {
     apply {
-        /* En aquest exemple no es realitza cap acció */
+        /* En aquest exemple no es realitza res */
     }
 }
 
 control MyIngress(inout headers hdr,
                   inout metadata meta,
                   inout standard_metadata_t standard_metadata) {
-    
-    /* Definim una taula senzilla per determinar la sortida (egress port)
-       i la nova adreça MAC de destinació en funció de l’adreça IP. */
-       
-    table ipv4_lpm {
-        key = {
-            hdr.ipv4.dstAddr: lpm;
-        }
-        actions = {
-            ipv4_forward;
-            drop;
-            NoAction;
-        }
-        size = 1024;
-        default_action = drop;
-    }
 
     action ipv4_forward(bit<48> dstMac, bit<9> port) {
         hdr.ethernet.dstAddr = dstMac;
@@ -95,6 +79,22 @@ control MyIngress(inout headers hdr,
     action drop() {
         /* No fem res, el paquet es descarta */
         standard_metadata.egress_spec = 0;
+    }
+    
+    /* Definim una taula senzilla per determinar la sortida (egress port)
+       i la nova MAC de dst depenent de la IP. */
+       
+    table ipv4_lpm {
+        key = {
+            hdr.ipv4.dstAddr: lpm;
+        }
+        actions = {
+            ipv4_forward; // Declare the parameters explicitly
+            drop;
+            NoAction;
+        }
+        size = 1024;
+        default_action = drop;
     }
 
     apply {
@@ -108,13 +108,13 @@ control MyEgress(inout headers hdr,
                  inout metadata meta,
                  inout standard_metadata_t standard_metadata) {
     apply {
-        /* En aquest exemple no es fa processament a l’egress */
+        /* En aquest exemple no es fa processament a l'egress */
     }
 }
 
 control MyComputeChecksum(inout headers hdr, inout metadata meta) {
     apply {
-        /* No es calcula la checksum en aquest exemple bàsic */
+        /* No es calcula la checksum en aquest exemple  */
     }
 }
 
@@ -125,7 +125,7 @@ control MyDeparser(packet_out packet, in headers hdr) {
     }
 }
 
-/* Instanciem la pipeline per a l’arquitectura v1model */
+/* Instanciem la pipeline per a l'arquitectura v1model */
 V1Switch(
     MyParser(),
     MyVerifyChecksum(),
