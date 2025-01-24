@@ -44,4 +44,3 @@ We can trace it, using:
 sudo tcpdump -i s1-eth1 -e -n
 sudo tcpdump -i s1-eth2 -e -n
 ```
-```
