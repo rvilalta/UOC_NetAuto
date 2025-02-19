@@ -1,7 +1,6 @@
-##Ansible per a l'automatització de xarxes
-###Preparació de l'entorn
-
+##Ansible per a l'automatització de xarxes##
 Instruccions per UBUNTU 22.04
+###Preparació de l'entorn###
 Per començar, instal·la Ansible al teu sistema:
 
 ```console
@@ -25,10 +24,10 @@ $ docker run -d --name ansible-network \
     --network=bridge \
     ubuntu:latest sleep infinity
 ```
-####Opció 2: Ús de Cisco DevNet Sandbox
+####Opció 2: Ús de Cisco DevNet Sandbox###
 Cisco ofereix un entorn en línia (\textit{sandbox}) per fer proves amb Ansible. T’hi pots connectar via SSH i utilitzar Ansible per automatitzar configuracions.
 
-###Configuració de l'inventari d'Ansible
+###Configuració de l'inventari d'Ansible###
 Crea un fitxer d’inventari (\texttt{hosts.ini}) per definir els dispositius a gestionar:
 
 ```
@@ -36,7 +35,7 @@ Crea un fitxer d’inventari (\texttt{hosts.ini}) per definir els dispositius a 
 network-device ansible_host=localhost ansible_connection=ssh ansible_user=root ansible_password=password
 ```
 
-###Creació d'un Playbook d'Ansible
+###Creació d'un Playbook d'Ansible###
 Un \textit{playbook} defineix les tasques d'automatització. Crea un fitxer anomenat \texttt{configure.yml}:
 
 ```
@@ -48,16 +47,16 @@ Un \textit{playbook} defineix les tasques d'automatització. Crea un fitxer anom
       ansible.builtin.shell: echo "network-device" > /etc/hostname
 ```
 
-###Execució del Playbook
+###Execució del Playbook###
 Executa el \textit{playbook} amb:
 
 ```console
 $ ansible-playbook -i hosts.ini configure.yml
 ```
 
-###Exemples addicionals de Playbook
+###Exemples addicionals de Playbook###
 
-####Exemple 1: Instal·lació d’un paquet
+####Exemple 1: Instal·lació d’un paquet####
 Instal·la un paquet en un node gestionat:
 
 ```
@@ -70,7 +69,7 @@ Instal·la un paquet en un node gestionat:
         state: present
 ```
 
-####Exemple 2: Copiar un fitxer de configuració
+####Exemple 2: Copiar un fitxer de configuració####
 Copia un fitxer al node gestionat:
 
 ```
@@ -83,7 +82,7 @@ Copia un fitxer al node gestionat:
         dest: /etc/network/config.cfg
 ```
 
-###Verificació de la configuració
+###Verificació de la configuració###
 Comprova si la configuració s’ha aplicat correctament:
 
 ```console
