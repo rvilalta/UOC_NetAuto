@@ -1,0 +1,237 @@
+<rpc message-id=”101”
+	xmlns=”urn:ietf:params:xml:ns:netconf:base:1.0”>
+	<edit-config
+		xmlns:nc=”urn:ietf:params:xml:ns:netconf:base:1.0”>
+		<target>
+			<candidate />
+		</target>
+		<error-option>rollback-on-error</error-option>
+		<config>
+			<interfaces
+				xmlns=”http://openconfig.net/yang/interfaces”>
+				<interface>
+					<name>xe4</name>
+					<subinterfaces>
+						<subinterface>
+							<index>100</index>
+							<config>
+								<index>100</index>
+							</config>
+							<vlan
+								xmlns=”http://openconfig.net/yang/vlan”>
+								<config>
+									<vlan-id>100</vlan-id>
+								</config>
+								<match>
+									<single-tagged>
+										<config>
+											<vlan-id>100</vlan-id>
+										</config>
+									</single-tagged>
+								</match>
+							</vlan>
+							<ipv4
+								xmlns=”http://openconfig.net/yang/interfaces/ip”>
+								<addresses>
+									<address>
+										<ip>20.20.20.20</ip>
+										<config>
+											<prefix-length>24</prefix-length>
+											<ip>20.20.20.20</ip>
+										</config>
+									</address>
+								</addresses>
+							</ipv4>
+						</subinterface>
+					</subinterfaces>
+				</interface>
+			</interfaces>
+			<network-instances
+				xmlns=”http://openconfig.net/yang/network-instance”>
+				<network-instance>
+					<name>VRF3621</name>
+					<interfaces>
+						<interface>
+							<id>xe4.100</id>
+							<config>
+								<interface>xe4.100</interface>
+								<id>xe4.100</id>
+							</config>
+						</interface>
+					</interfaces>
+					<encapsulation>
+						<config>
+							<label-allocation-mode
+								xmlns:oc-ni-types=»http://openconfig.net/yang/
+network-instance-types»>oc-ni-types:INSTANCE_LABEL
+							</label-allocation-mode>
+							<encapsulation-type
+								xmlns:oc-ni-types=»http://openconfig.net/yang/
+network-instance-types»>oc-ni-types:MPLS
+							</encapsulation-type>
+						</config>
+					</encapsulation>
+					<tables>
+						<table>
+							<protocol
+								xmlns:oc-pol-types=»http://openconfig.net/yang/policytypes
+»>oc-pol-types:BGP
+							</protocol>
+							<address-family
+								xmlns:oc-types=”http://openconfig.net/yang/openconfigtypes”>
+oc-types:IPV4
+							</address-family>
+							<config>
+								<address-family
+									xmlns:oc-types=”http://openconfig.net/yang/openconfigtypes”>
+oc-types:IPV4
+								</address-family>
+								<protocol
+									xmlns:oc-pol-types=”http://openconfig.net/yang/policytypes”>
+oc-pol-types:BGP
+								</protocol>
+							</config>
+						</table>
+						<table>
+							<protocol
+								xmlns:oc-pol-types=”http://openconfig.net/yang/policytypes”>
+oc-pol-types:DIRECTLY_CONNECTED
+							</protocol>
+							<address-family
+								xmlns:oc-types=”http://openconfig.net/yang/openconfigtypes”>
+oc-types:IPV6
+							</address-family>
+							<config>
+								<address-family
+									xmlns:oc-types=”http://openconfig.net/yang/openconfigtypes”>
+oc-types:IPV6
+								</address-family>
+								<protocol
+									xmlns:oc-pol-types=”http://openconfig.net/yang/policytypes”>
+oc-pol-types:DIRECTLY_CONNECTED
+								</protocol>
+							</config>
+						</table>
+						<table>
+							<protocol
+								xmlns:oc-pol-types=”http://openconfig.net/yang/policytypes”>
+oc-pol-types:DIRECTLY_CONNECTED
+							</protocol>
+							<address-family
+								xmlns:oc-types=”http://openconfig.net/yang/openconfigtypes”>
+oc-types:IPV4
+							</address-family>
+							<config>
+								<address-family
+									xmlns:oc-types=”http://openconfig.net/yang/openconfigtypes”>
+oc-types:IPV4
+								</address-family>
+								<protocol
+									xmlns:oc-pol-types=”http://openconfig.net/yang/policytypes”>
+oc-pol-types:DIRECTLY_CONNECTED
+								</protocol>
+							</config>
+						</table>
+					</tables>
+					<protocols>
+						<protocol>
+							<identifier>oc-pol-types:BGP</identifier>
+							<name>100</name>
+							<bgp>
+								<global>
+									<config>
+										<as>100</as>
+									</config>
+								</global>
+							</bgp>
+							<config>
+								<enabled>true</enabled>
+								<identifier
+									xmlns:oc-pol-types=”http://openconfig.net/yang/policytypes”>
+oc-pol-types:BGP
+								</identifier>
+								<name>100</name>
+							</config>
+						</protocol>
+						<protocol>
+							<identifier>oc-pol-types:DIRECTLY_CONNECTED</identifier>
+							<name>DIRECTLY_CONNECTED</name>
+							<config>
+								<enabled>true</enabled>
+								<identifier
+									xmlns:oc-pol-types=”http://openconfig.net/yang/policytypes”>
+oc-pol-types:DIRECTLY_CONNECTED
+								</identifier>
+								<name>DIRECTLY_CONNECTED</name>
+							</config>
+						</protocol>
+					</protocols>
+					<table-connections>
+						<table-connection>
+							<src-protocol
+								xmlns:oc-pol-types=”http://openconfig.net/yang/policytypes”>
+oc-pol-types:DIRECTLY_CONNECTED
+							</src-protocol>
+							<dst-protocol
+								xmlns:oc-pol-types=”http://openconfig.net/yang/policytypes”>
+oc-pol-types:BGP
+							</dst-protocol>
+							<address-family
+								xmlns:oc-types=”http://openconfig.net/yang/openconfigtypes”>
+oc-types:IPV4
+							</address-family>
+							<config>
+								<address-family
+									xmlns:oc-types=”http://openconfig.net/yang/openconfigtypes”>
+oc-types:IPV4
+								</address-family>
+								<default-import-policy>ACCEPT_ROUTE</default-import-policy>
+								<src-protocol
+									xmlns:oc-pol-types=”http://openconfig.net/yang/policytypes”>
+oc-pol-types:DIRECTLY_CONNECTED
+								</src-protocol>
+								<dst-protocol
+									xmlns:oc-pol-types=”http://openconfig.net/yang/policytypes”>
+oc-pol-types:BGP
+								</dst-protocol>
+								<dst-instance
+									xmlns=»http://www.ipinfusion.com/yang/ocnos/ipi-oc-niaugments
+»>100
+								</dst-instance>
+							</config>
+						</table-connection>
+					</table-connections>
+					<config>
+						<enabled>true</enabled>
+						<description>”L3VPN Test Instance 3621”</description>
+						<enabled-address-families
+							xmlns:oc-types=”http://openconfig.net/yang/
+openconfig-types”>oc-types:IPV6
+						</enabled-address-families>
+						<enabled-address-families
+							xmlns:oc-types=”http://openconfig.net/yang/
+openconfig-types”>oc-types:IPV4
+						</enabled-address-families>
+						<router-id>2.2.2.2</router-id>
+						<route-distinguisher>3621:1</route-distinguisher>
+						<name>VRF3621</name>
+						<type
+							xmlns:oc-ni-types=”http://openconfig.net/yang/network-instancetypes”>
+oc-ni-types:L3VRF
+						</type>
+					</config>
+					<route-targets
+						xmlns=”http://www.ipinfusion.com/yang/ocnos/ipi-oc-niaugments”>
+						<route-target>
+							<rt-rd-string>3621:1</rt-rd-string>
+							<config>
+								<rt-rd-string>3621:1</rt-rd-string>
+								<direction>BOTH</direction>
+							</config>
+						</route-target>
+					</route-targets>
+				</network-instance>
+			</network-instances>
+		</config>
+	</edit-config>
+</rpc>
