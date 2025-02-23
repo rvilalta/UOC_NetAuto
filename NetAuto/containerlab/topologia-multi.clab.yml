@@ -1,0 +1,26 @@
+name: topologia-multi
+
+topology:
+  nodes:
+    R1:
+      kind: linux
+      image: frrouting/frr:latest
+    R2:
+      kind: linux
+      image: frrouting/frr:latest
+    R3:
+      kind: linux
+      image: frrouting/frr:latest
+    PC1:
+      kind: linux
+      image: alpine:latest
+    PC2:
+      kind: linux
+      image: alpine:latest
+
+  links:
+    - endpoints: ["PC1:eth1", "R1:eth1"]
+    - endpoints: ["R1:eth2", "R2:eth1"]
+    - endpoints: ["R2:eth2", "R3:eth1"]
+    - endpoints: ["R3:eth2", "PC2:eth1"]
+  
