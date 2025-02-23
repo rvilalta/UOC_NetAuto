@@ -19,8 +19,11 @@ topology:
       image: frrouting/frr:latest
 
   links:
+    # Troncal MPLS
     - endpoints: ["PE1:eth1", "P1:eth1"]
     - endpoints: ["PE2:eth1", "P1:eth2"]
+
+    # Accessos al client
     - endpoints: ["PE1:eth2", "CE1:eth1"]
     - endpoints: ["PE2:eth2", "CE2:eth1"]
-
+  
