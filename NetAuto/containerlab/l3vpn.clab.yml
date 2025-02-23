@@ -1,0 +1,26 @@
+name: l3vpn-lab
+
+topology:
+  nodes:
+    P1:
+      kind: linux
+      image: frrouting/frr:latest
+    PE1:
+      kind: linux
+      image: frrouting/frr:latest
+    PE2:
+      kind: linux
+      image: frrouting/frr:latest
+    CE1:
+      kind: linux
+      image: frrouting/frr:latest
+    CE2:
+      kind: linux
+      image: frrouting/frr:latest
+
+  links:
+    - endpoints: ["PE1:eth1", "P1:eth1"]
+    - endpoints: ["PE2:eth1", "P1:eth2"]
+    - endpoints: ["PE1:eth2", "CE1:eth1"]
+    - endpoints: ["PE2:eth2", "CE2:eth1"]
+
