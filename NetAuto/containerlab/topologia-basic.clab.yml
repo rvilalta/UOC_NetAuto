@@ -1,0 +1,17 @@
+name: topologia-basic
+
+topology:
+  nodes:
+    router1:
+      kind: linux
+      image: frrouting/frr:latest
+    router2:
+      kind: linux
+      image: frrouting/frr:latest
+    pc1:
+      kind: linux
+      image: alpine:latest
+
+  links:
+    - endpoints: ["router1:eth1", "router2:eth1"]
+    - endpoints: ["router1:eth2", "pc1:eth1"]
