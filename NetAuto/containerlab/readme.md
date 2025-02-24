@@ -129,35 +129,25 @@ Accedirem a cada contenidor (P1, PE1, PE2, CE1, CE2) i configurarem FRR segons e
 
 A títol d'exemple, proposem:
 
-\begin{itemize}
-    \item \textbf{Adreces a la troncal (PE1--P1--PE2)}: 
-    \begin{itemize}
-        \item PE1: \texttt{eth1} = 10.0.1.1/24
-        \item P1: \texttt{eth1} = 10.0.1.2/24 (cap a PE1), \texttt{eth2} = 10.0.2.2/24 (cap a PE2)
-        \item PE2: \texttt{eth1} = 10.0.2.1/24
-    \end{itemize}
-    \item \textbf{Accés a client A (CE1--PE1)}:
-    \begin{itemize}
-        \item CE1: \texttt{eth1} = 192.168.1.2/24
-        \item PE1: \texttt{eth2} = 192.168.1.1/24 (per VRF \texttt{CLIENTA})
-    \end{itemize}
-    \item \textbf{Accés a client B (CE2--PE2)}:
-    \begin{itemize}
-        \item CE2: \texttt{eth1} = 192.168.2.2/24
-        \item PE2: \texttt{eth2} = 192.168.2.1/24 (per VRF \texttt{CLIENTB})
-    \end{itemize}
-\end{itemize}
+1. Adreces a la troncal (PE1--P1--PE2): 
+  * PE1: eth1 = 10.0.1.1/24
+  * P1: eth1 = 10.0.1.2/24 (cap a PE1), eth2 = 10.0.2.2/24 (cap a PE2)
+  * PE2: eth1 = 10.0.2.1/24
+2. Accés a client A (CE1--PE1):
+  * CE1: eth1 = 192.168.1.2/24
+  * PE1: eth2 = 192.168.1.1/24 (per VRF CLIENTA)
+3. Accés a client B (CE2--PE2):
+  * CE2: eth1 = 192.168.2.2/24
+  * PE2: eth2 = 192.168.2.1/24 (per VRF CLIENTB)
 
-\subsection{Router P1 (núvol proveïdor)}
-El \emph{router} P1 fa només funcions de \emph{tronc MPLS}. Necessita:
-\begin{enumerate}
-  \item Assignar IPs a \texttt{eth1} i \texttt{eth2}.
-  \item Configurar un IGP (exemple OSPF o IS-IS) o BGP interior, per tal que hi hagi \emph{reachability} entre PE1 i PE2.
-  \item Habilitar \texttt{mpls} i \texttt{ldp}.
-\end{enumerate}
+#### Router P1 (núvol proveïdor) ####
+El router P1 fa només funcions de tronc MPLS. Necessita:
+* Assignar IPs a eth1 i eth2.
+* Configurar un IGP (exemple OSPF o IS-IS) o BGP interior, per tal que hi hagi reachability entre PE1 i PE2.
+* Habilitar mpls i ldp.
 
-Exemple de configuració a P1 (via \texttt{vtysh}):
-\begin{minted}{text}
+Exemple de configuració a P1 (via vtysh):
+```
 configure terminal
 !
 interface eth1
@@ -176,27 +166,22 @@ router mpls ldp
  ! o configurat explicitament
 end
 write
-\end{minted}
+```
 
 Amb això, P1 intercanviarà etiquetes MPLS amb PE1 i PE2 via LDP (sempre que ells també tinguin LDP habilitat).
 
-\subsection{Router PE1}
-PE1 és un \emph{router d'accés}, per tant:
-\begin{itemize}
-  \item \textbf{Troncal}: \texttt{eth1 = 10.0.1.1/24} (cap a P1).
-  \item \textbf{Accés client A}: \texttt{eth2 = 192.168.1.1/24}, però dins la VRF \texttt{CLIENTA}.
-\end{itemize}
+#### Router PE1 ####
+PE1 és un router d'accés, per tant:
+* Troncal: eth1 = eth2 = 192.168.1.1/24, però dins la VRF CLIENTA.
 
 Cal configurar:
-\begin{enumerate}
-    \item IP i LDP a la interfície troncal (\texttt{eth1}).
-    \item VRF \texttt{CLIENTA} i assignar \texttt{eth2} a la VRF.
-    \item Sessió BGP \emph{VPNv4} amb \texttt{PE2} (entre ells es veuen via P1).
-    \item Sessió BGP amb \texttt{CE1} (address-family ipv4 en VRF \texttt{CLIENTA}) o un protocol que escullis (p.\,ex. OSPF).
-\end{enumerate}
+1. IP i LDP a la interfície troncal (eth1).
+2. VRF CLIENTA i assignar eth2 a la VRF.
+3. Sessió BGP VPNv4 amb PE2 (entre ells es veuen via P1).
+4. Sessió BGP amb CE1 (address-family ipv4 en VRF CLIENTA) o un protocol que escullis (p.,ex. OSPF).
 
 Exemple:
-\begin{minted}{text}
+```
 configure terminal
 !
 interface eth1
@@ -235,13 +220,13 @@ router bgp 65000
  exit-address-family
 end
 write
-\end{minted}
+```
 
-En aquest exemple, s’ha usat \texttt{router bgp 65000} tant a PE1 com a PE2 (IBGP), i la troncal va per la xarxa 10.0.x.x. L’\emph{address-family vpnv4} és la que permet compartir rutes de VRF entre PE1 i PE2, transportant etiquetes MPLS.
+En aquest exemple, s’ha usat router bgp 65000 tant a PE1 com a PE2 (IBGP), i la troncal va per la xarxa 10.0.x.x. L’address-family vpnv4 és la que permet compartir rutes de VRF entre PE1 i PE2, transportant etiquetes MPLS.
 
-\subsection{Router PE2}
-A \textbf{PE2} passa el mateix concepte, però amb la VRF \texttt{CLIENTB}:
-\begin{minted}{text}
+#### Router PE2 ####
+A PE2 passa el mateix concepte, però amb la VRF CLIENTB:
+```
 configure terminal
 !
 interface eth1
@@ -275,17 +260,15 @@ router bgp 65000
  exit-address-family
 end
 write
-\end{minted}
+```
 
-\subsection{Routers CE (CE1 i CE2)}
+#### Routers CE (CE1 i CE2) ####
 Els routers CE poden tenir configuracions senzilles. Poden fer:
-\begin{itemize}
-    \item BGP amb la VRF del PE.
-    \item OSPF o estàtic: Depèn de l'escenari.
-\end{itemize}
-Imaginem que CE1 fa BGP amb PE1 (AS 65010), i CE2 fa BGP amb PE2 (AS 65020). O bé tots dins del mateix AS, etc. Aquí un exemple ràpid de \texttt{CE1}:
+* BGP amb la VRF del PE.
+* OSPF o estàtic: Depèn de l'escenari.
+Imaginem que CE1 fa BGP amb PE1 (AS 65010), i CE2 fa BGP amb PE2 (AS 65020). O bé tots dins del mateix AS, etc. Aquí un exemple ràpid de CE1:
 
-\begin{minted}{text}
+```
 configure terminal
 interface eth1
  ip address 192.168.1.2/24
@@ -296,38 +279,37 @@ router bgp 65010
  network 192.168.1.0/24
 end
 write
-\end{minted}
+```
 
-A \texttt{CE2}, quelcom similar (fent BGP amb \texttt{192.168.2.1}).
+A CE2, quelcom similar (fent BGP amb 192.168.2.1).
 
-\subsection{Verificacions bàsiques}
+#### Verificacions bàsiques ####
 Un cop fet tot això:
 
 1. Comprovar l’estat de LDP a P1, PE1, PE2:
-  \begin{minted}{text}
+```
   show mpls ldp neighbor
   show mpls ldp bindings
   show mpls forwarding
-  \end{minted}
+```
 
-  \item Comprovar la IGP (OSPF, IS-IS, etc.) per veure si hi ha rutes internes a la troncal.
-  \begin{minted}{text}
+2. Comprovar la IGP (OSPF, IS-IS, etc.) per veure si hi ha rutes internes a la troncal.
+```
   show ip ospf neighbor
   show ip route
-  \end{minted}
+```
 
-  \item Comprovar BGP \emph{vpnv4} entre PE1 i PE2:
-  \begin{minted}{text}
+3. Comprovar BGP vpnv4 entre PE1 i PE2:
+```
   show bgp vpnv4 summary
   show bgp vpnv4
-  \end{minted}
+```
 
-  \item Comprovar BGP o OSPF entre CE i PE a cada VRF:
-  \begin{minted}{text}
+4. Comprovar BGP o OSPF entre CE i PE a cada VRF:
+```
   show bgp ipv4 vrf CLIENTA summary
   show bgp ipv4 vrf CLIENTA
   show bgp ipv4 vrf CLIENTB summary
-  \end{minted}
+```
 
-  \item Finalment, provar \texttt{ping} entre CE1 i CE2 (si la idea és que formin part d’una mateixa VPN) o verificar que cadascun arriba a la seva xarxa corresponent.
-\end{enumerate}
+5. Finalment, provar ping entre CE1 i CE2 (si la idea és que formin part d’una mateixa VPN) o verificar que cadascun arriba a la seva xarxa corresponent.
