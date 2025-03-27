@@ -63,5 +63,72 @@ RUN chmod +x /usr/local/bin/firewall.sh
 # Executem l'script
 CMD ["/usr/local/bin/firewall.sh"]
 ```
+## Construir i pujar la imatge
 
+- Construir la imatge:
+```
+docker build -t <usuari>/firewall-cnf:1.0 .
+```
+
+- Pujar la imatge:
+```
+docker push <usuari>/firewall-cnf:1.0
+```
+
+## Desplegament a Kubernetes
+### deployment.yaml
+```
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: firewall-cnf
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: firewall-cnf
+  template:
+    metadata:
+      labels:
+        app: firewall-cnf
+    spec:
+      containers:
+      - name: firewall
+        image: <usuari>/firewall-cnf:1.0
+        securityContext:
+          privileged: true
+```
+
+### service.yaml
+En cas que vulguem accedir a aquest pod directament (tot i que un firewall sovint no necessita un Service), podem definir-ne un de tipus ClusterIP sense mapejar ports:
+```
+apiVersion: v1
+kind: Service
+metadata:
+  name: firewall-cnf-service
+spec:
+  selector:
+    app: firewall-cnf
+  type: ClusterIP
+  ports:
+  - protocol: TCP
+    port: 9999
+    targetPort: 9999
+\end{lstlisting}
+```
+
+## Aplicar la configuració a Kubernetes
+```
+kubectl apply -f deployment.yaml
+kubectl apply -f service.yaml
+```
+
+Comprovar estat:
+```
+kubectl get pods
+kubectl logs -f <nom_pod_firewall>
+```
+
+Si el pod té accés privilegiat, podràs veure en els logs el missatge:
+"Regles iptables aplicades amb correctament."
 
