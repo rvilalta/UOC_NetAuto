@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: firewall-cnf
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: firewall-cnf
+  template:
+    metadata:
+      labels:
+        app: firewall-cnf
+    spec:
+      containers:
+      - name: firewall
+        image: <usuari>/firewall-cnf:1.0
+        securityContext:
+          privileged: true
+
