@@ -132,3 +132,4 @@ kubectl logs -f <nom_pod_firewall>
 Si el pod té accés privilegiat, podràs veure en els logs el missatge:
 "Regles iptables aplicades amb correctament."
 
+
