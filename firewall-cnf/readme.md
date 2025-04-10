@@ -114,7 +114,6 @@ spec:
   - protocol: TCP
     port: 9999
     targetPort: 9999
-\end{lstlisting}
 ```
 
 ## Aplicar la configuració a Kubernetes
