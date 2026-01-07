@@ -9,7 +9,7 @@ En aquest exercici, explorarem com tc (traffic control) permet prioritzar el tr�
 Crearem una xarxa lineal simple amb dos hosts i un switch:
 
 ```console
-sudo mn --topo=linear,2 --link tc
+sudo mn --topo=single,2 --link tc
 # apareix el prompt "mininet>"
 ```
 
@@ -18,9 +18,12 @@ sudo mn --topo=linear,2 --link tc
 Simularem trànsit normal i trànsit sensible al temps amb \texttt{iperf}:
 
 ```console
-# mininet> h1 iperf -s -u -p 5001             # servidor UDP (trànsit normal)
+# mininet> h1 iperf -s -u -p 5002             # servidor UDP (trànsit normal)
+# mininet> h1 iperf -s -u -p 5001             # servidor UDP (trànsit TSN)
 # -- en un altre terminal del CLI --
 mininet> h2 iperf -c 10.0.0.1 -u -p 5002 -b 1M -t 10   # client UDP 1 Mbps (trànsit TSN)
+mininet> h2 iperf -c 10.0.0.1 -u -p 5001 -b 0.1M -t 10   # client UDP 0.1 Mbps (trànsit normal)
+
 ```
 
 #### Priorització amb tc  ####
@@ -52,7 +55,7 @@ Simularem trànsit crític periòdic amb iperf:
 
 ```console
 # Reinicia la xarxa per a un nou escenari
-sudo mn --topo linear,2 --link tc
+sudo mn --topo single,2 --link tc
 ```
 
 #### Generació de Trànsit de Fons #### 
@@ -61,8 +64,12 @@ Simularem trànsit de fons que pot interferir amb el trànsit crític:
 
 ```console
 # mininet> h1 iperf -s -u -p 5001 -i 1          # trànsit crític periòdic
+# mininet> h1 iperf -s -u -p 5002 -i 1          # trànsit de fons
+
 # -- altre terminal --
 mininet> h2 iperf -c 10.0.0.1 -u -p 5002 -b 500K  # trànsit de fons
+mininet> h2 iperf -c 10.0.0.1 -u -p 5001 -b 1M  # trànsit crític
+
 ```
 
 #### Planificació amb tc #### 
@@ -87,15 +94,19 @@ Simular un aspecte de TAS, un component clau de TSN, per garantir la transmissi�
 
 ```console
 # Torna a arrencar Mininet
-sudo mn --topo linear,2 --link tc
+sudo mn --topo single,2 --link tc
 ```
 
 #### Trànsit ####
 
 ```console
 # mininet> h1 iperf -s -u -p 5001 -i 0.1        # flux crític
+# mininet> h1 iperf -s -u -p 5002 -i 0.1        # trànsit de fons
+
 # -- altre terminal --
-mininet> h2 iperf -c 10.0.0.1 -p 5002           # trànsit de fons (TCP)
+mininet> h2 iperf -c 10.0.0.1 -u -p 5002           # trànsit de fons
+mininet> h2 iperf -c 10.0.0.1 -u -p 5001           # flux crític
+
 ```
 
 #### Simulació de TAS amb tc ####
